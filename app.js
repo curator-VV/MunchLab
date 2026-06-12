@@ -18,6 +18,7 @@ const elements = {
   apiKeyInput: document.getElementById('api-key-input'),
   saveSettingsBtn: document.getElementById('save-settings-btn'),
   cancelSettingsBtn: document.getElementById('cancel-settings-btn'),
+  resetDbBtn: document.getElementById('reset-db-btn'),
   
   // Navigation Tabs
   navItems: document.querySelectorAll('.nav-item'),
@@ -67,6 +68,7 @@ const elements = {
   addToGroceryBtn: document.getElementById('add-to-grocery-btn'),
   shareSauceBtn: document.getElementById('share-sauce-btn'),
   munchModeBtn: document.getElementById('munch-mode-btn'),
+  deleteRecipeBtn: document.getElementById('delete-recipe-btn'),
   
   // Export Modal
   shareDialog: document.getElementById('share-dialog'),
@@ -1029,6 +1031,27 @@ function copyToClipboard(text, successMsg) {
   });
 }
 
+function deleteCurrentRecipe() {
+  if (!currentRecipe) return;
+  if (confirm(`Are you sure you want to permanently delete "${currentRecipe.title}"?`)) {
+    recipes = recipes.filter(r => r.id !== currentRecipe.id);
+    saveRecipes();
+    renderRecipes();
+    closeRecipeDetails();
+    showToast("Recipe trashed! 🗑️");
+  }
+}
+
+function resetRecipeDatabase() {
+  if (confirm("🚨 WARNING: Resetting the lab will delete all of your imported recipes and restore the default ones. Do you want to proceed?")) {
+    recipes = [...defaultRecipes];
+    saveRecipes();
+    renderRecipes();
+    elements.settingsDialog.close();
+    showToast("Recipe database reset! 🔄");
+  }
+}
+
 // 11. Event Listeners Setup
 function setupEventListeners() {
   // Navigation
@@ -1077,6 +1100,8 @@ function setupEventListeners() {
     elements.settingsDialog.close();
   });
   
+  elements.resetDbBtn.addEventListener('click', resetRecipeDatabase);
+  
   // Add Recipe dialog trigger
   elements.fabBtn.addEventListener('click', setupImportDialog);
   elements.cancelImportBtn.addEventListener('click', () => elements.importDialog.close());
@@ -1112,6 +1137,7 @@ function setupEventListeners() {
   // Details Overlay controls
   elements.detailsClose.addEventListener('click', closeRecipeDetails);
   elements.munchModeBtn.addEventListener('click', enterCookMode);
+  elements.deleteRecipeBtn.addEventListener('click', deleteCurrentRecipe);
   
   elements.addToGroceryBtn.addEventListener('click', () => {
     if (currentRecipe) {
