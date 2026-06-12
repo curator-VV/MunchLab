@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: munchlab
+    runtime: static
+    buildCommand: ""
+    publishDir: "."

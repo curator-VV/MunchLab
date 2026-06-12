@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MunchLab 🌶️ - Jace's Recipe Laboratory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating Food Background Decoration (For Desktop view) -->
+  <div class="decorations">
+    <div class="floating-food">🍅</div>
+    <div class="floating-food">🌶️</div>
+    <div class="floating-food">🥑</div>
+    <div class="floating-food">🍋</div>
+    <div class="floating-food">🥦</div>
+    <div class="floating-food">🥕</div>
+  </div>
+
+  <!-- Device Simulator Container -->
+  <div class="device-container">
+    <!-- Simulator Screen -->
+    <div class="device-screen">
+      <!-- Simulated Notch -->
+      <div class="device-notch"></div>
+      
+      <!-- Simulated Status Bar -->
+      <div class="device-status-bar">
+        <span id="status-bar-clock">12:00 PM</span>
+        <div class="status-right">
+          <span>📶</span>
+          <span>📶</span>
+          <span>100% 🔋</span>
+        </div>
+      </div>
+
+      <!-- Core App Layout -->
+      <div class="app-container">
+        
+        <!-- App Header -->
+        <header class="app-header">
+          <div class="brand">
+            <h1>MunchLab 🌶️</h1>
+            <span>JACE'S FLAVOR LABORATORY</span>
+          </div>
+          <div class="header-actions">
+            <button id="theme-btn" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">🌙</button>
+            <button id="settings-btn" class="icon-btn" title="Gemini AI Settings" aria-label="Gemini AI Settings">⚙️</button>
+          </div>
+        </header>
+
+        <!-- Scrollable Body Views -->
+        <main class="app-body">
+          
+          <!-- View 1: Recipe Menu Tab -->
+          <section id="menu-tab" class="tab-view active">
+            <div class="search-container">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" class="search-input" placeholder="Search Jace's Lab...">
+            </div>
+            
+            <nav class="categories-slider" aria-label="Recipe categories">
+              <button class="category-chip active" data-category="All">🥗 All</button>
+              <button class="category-chip" data-category="Mexican">🌮 Mexican</button>
+              <button class="category-chip" data-category="Italian">🍝 Italian</button>
+              <button class="category-chip" data-category="Healthy">🥦 Healthy</button>
+              <button class="category-chip" data-category="Sweet Treats">🍰 Sweets</button>
+              <button class="category-chip" data-category="Comfort Food">🍔 Comfort</button>
+              <button class="category-chip" data-category="Quick & Easy">⚡ Quick</button>
+            </nav>
+            
+            <div id="recipes-grid" class="recipes-grid">
+              <!-- Recipe cards dynamically injected here -->
+            </div>
+          </section>
+
+          <!-- View 2: Grocery List Tab -->
+          <section id="grocery-tab" class="tab-view">
+            <div class="grocery-meta">
+              <h2>Grocery Lab 🛒</h2>
+              <div style="display:flex; gap: 8px;">
+                <button id="add-custom-grocery-btn" class="icon-btn" title="Add item" style="font-size: 1rem;">➕</button>
+                <button id="clear-grocery-btn" class="icon-btn" title="Clear list" style="font-size: 1rem;">🗑️</button>
+              </div>
+            </div>
+            
+            <div id="grocery-sections">
+              <!-- Grocery items categorized dynamically here -->
+            </div>
+          </section>
+
+          <!-- View 3: Munch Roulette Tab -->
+          <section id="roulette-tab" class="tab-view">
+            <div class="roulette-container">
+              <h2 style="font-family: var(--font-title); font-weight: 800; text-align: center;">Munch Roulette 🎰</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: -12px;">Can't choose? Let the laboratory spin-wheel pick!</p>
+              
+              <div style="position: relative;">
+                <div class="wheel-pointer"></div>
+                <div id="wheel-wrapper" class="wheel-wrapper">
+                  <canvas id="wheel-canvas" class="wheel-canvas"></canvas>
+                </div>
+              </div>
+              
+              <button id="roulette-btn" class="roulette-btn">Spin the Wheel! 🎲</button>
+              <div id="roulette-result" class="roulette-result">Spins to decide your meal! 🎰</div>
+            </div>
+          </section>
+        </main>
+
+        <!-- Floating Action Button for Adding Recipes -->
+        <button id="fab-btn" class="fab-btn" title="Import Recipe" aria-label="Import Recipe">👨‍🍳</button>
+
+        <!-- Bottom Tab Navigation -->
+        <nav class="bottom-nav" aria-label="Main Navigation">
+          <button class="nav-item active" data-tab="menu">
+            <span class="icon">🍽️</span>
+            <span>Menu</span>
+          </button>
+          <button class="nav-item" data-tab="roulette">
+            <span class="icon">🎰</span>
+            <span>Roulette</span>
+          </button>
+          <button class="nav-item" data-tab="grocery">
+            <span class="icon">🛒</span>
+            <span>Grocery</span>
+          </button>
+        </nav>
+
+      </div>
+
+      <!-- OVERLAYS (Constrained inside Screen) -->
+      
+      <!-- Overlay 1: Recipe Details Page -->
+      <div id="details-overlay" class="details-overlay">
+        <button id="details-close" class="details-close-btn" aria-label="Close details">←</button>
+        
+        <div id="details-hero-img" class="details-header-img">
+          <img src="" alt="Recipe image">
+          <div class="details-gradient"></div>
+        </div>
+        
+        <div class="details-scrollable">
+          <div class="details-info">
+            <h2 id="details-title" class="details-title">Recipe Title</h2>
+            <span id="details-source" class="details-source">Source Link</span>
+            
+            <div class="details-chips">
+              <span id="details-time" class="details-chip time">⏱️ 0 mins</span>
+              <span id="details-servings" class="details-chip servings">👥 Serves 0</span>
+              <span id="details-spice" class="details-chip spice">🌶️ Spice: 0</span>
+            </div>
+          </div>
+          
+          <h3 class="details-section-title">Ingredients</h3>
+          <div id="details-ingredients" class="ingredient-list">
+            <!-- Ingredients check list items here -->
+          </div>
+          
+          <h3 class="details-section-title">Cooking Steps</h3>
+          <div id="details-instructions" class="instruction-list">
+            <!-- Steps list items here -->
+          </div>
+          
+          <div class="details-actions">
+            <button id="add-to-grocery-btn" class="btn btn-secondary">Get Ingredients 🛒</button>
+            <button id="share-sauce-btn" class="btn btn-secondary">Share Sauce 🌶️</button>
+          </div>
+          <button id="munch-mode-btn" class="btn btn-primary" style="width:100%; margin-top:12px;">Start Munch Mode! 👨‍🍳</button>
+        </div>
+      </div>
+
+      <!-- Overlay 2: Cook Mode Screen (Large Text Step-by-Step) -->
+      <div id="cook-mode-overlay" class="cook-mode-overlay">
+        <div class="cook-header">
+          <button id="cook-close-btn" class="icon-btn" aria-label="Exit cook mode" style="background:transparent;">❌</button>
+          <span id="cook-recipe-title" style="font-family: var(--font-title); font-weight:800; font-size:1rem; text-align:center; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Title</span>
+          <div style="width: 40px;"></div> <!-- balancer -->
+        </div>
+        
+        <div class="cook-progress-bar">
+          <div id="cook-progress-fill" class="cook-progress-fill"></div>
+        </div>
+        
+        <div class="cook-card">
+          <span id="cook-step-num" class="cook-step-num">Step 1 of 5</span>
+          <p id="cook-step-text" class="cook-step-text">Read ingredients to proceed.</p>
+          
+          <div class="tts-controls">
+            <button id="cook-tts-btn" class="tts-btn" title="Speak step out loud" aria-label="Speak step out loud">🔊</button>
+          </div>
+        </div>
+        
+        <!-- Timer Widget -->
+        <div class="timer-container">
+          <span>⏱️</span>
+          <span id="timer-time" class="timer-time">00:00</span>
+          <button id="timer-toggle-btn" class="timer-btn" title="Pause/Play timer">▶️</button>
+          <button id="timer-reset-btn" class="timer-btn" title="Reset timer">🔄</button>
+        </div>
+
+        <div class="cook-navigation">
+          <button id="cook-prev-btn" class="btn btn-secondary">👈 Back</button>
+          <button id="cook-next-btn" class="btn btn-primary">Next step 👉</button>
+        </div>
+      </div>
+
+      <!-- Overlay 3: Scanning Animation for AI Parsing -->
+      <div id="scanning-overlay" class="scanning-overlay">
+        <div class="scan-animation">
+          <span class="scan-icon">🤖</span>
+        </div>
+        <h2 style="font-family: var(--font-title); font-weight: 800; font-size:1.3rem;">MunchLab AI Parsing</h2>
+        <div id="scan-status" class="scan-status-list">Mixing spices...</div>
+      </div>
+
+      <!-- DIALOG MODALS (Using Native HTML5 <dialog> with closedby="any") -->
+      
+      <!-- Settings Dialog -->
+      <dialog id="settings-dialog" closedby="any" aria-labelledby="settings-title">
+        <div class="modal-header">
+          <h2 id="settings-title">AI Engine Settings</h2>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:0.8rem; color: var(--text-muted); line-height: 1.4;">
+            MunchLab works instantly using our <strong>Simulated Chef AI</strong> parser.
+            <br><br>
+            To activate <strong>100% real AI parsing</strong> of YouTube links, recipes, and screenshot uploads, enter your Gemini API Key below. Your key is stored locally on your device.
+          </p>
+          <div class="form-group">
+            <label for="api-key-input">Gemini API Key</label>
+            <input type="password" id="api-key-input" class="form-control" placeholder="AIzaSy...">
+          </div>
+          <p style="font-size:0.75rem; color: var(--primary);">
+            💡 Learn how to get a free API Key at Google AI Studio.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancel-settings-btn" class="btn btn-secondary">Cancel</button>
+          <button id="save-settings-btn" class="btn btn-primary">Save Settings</button>
+        </div>
+      </dialog>
+
+      <!-- Import Wizard Modal -->
+      <dialog id="import-dialog" closedby="any" aria-labelledby="import-title" style="max-height: 85%;">
+        <div class="modal-header">
+          <h2 id="import-title">Import Recipe 🪄</h2>
+        </div>
+        <div class="modal-body" style="padding-top: 10px;">
+          
+          <div class="import-tabs">
+            <button class="import-tab-btn active" data-tab="screenshot">📸 Scan</button>
+            <button class="import-tab-btn" data-tab="link">🔗 Link</button>
+            <button class="import-tab-btn" data-tab="text">📝 Copy-Paste</button>
+            <button class="import-tab-btn" data-tab="diy">🛠️ DIY</button>
+          </div>
+          
+          <!-- Content 1: Screenshot -->
+          <div id="import-screenshot" class="import-tab-content active">
+            <label style="font-size: 0.8rem; font-weight:700; color: var(--text-muted);">UPLOAD SCREENSHOT / PHOTO</label>
+            <div id="file-upload-box" class="file-upload-box">
+              <span class="upload-icon">📸</span>
+              <span style="font-size: 0.85rem; font-weight: 600;">Tap to select photo</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Supports PNG, JPG</span>
+              <input type="file" id="screenshot-file" accept="image/*">
+            </div>
+            
+            <div id="file-preview" class="file-preview">
+              <img id="preview-image" src="#" alt="Screenshot preview">
+              <button id="remove-file" class="remove-file">×</button>
+            </div>
+          </div>
+          
+          <!-- Content 2: Link -->
+          <div id="import-link" class="import-tab-content">
+            <div class="form-group">
+              <label for="recipe-link">PASTE YOUTUBE, INSTAGRAM OR WEB LINK</label>
+              <input type="url" id="recipe-link" class="form-control" placeholder="https://youtube.com/watch?v=...">
+            </div>
+          </div>
+          
+          <!-- Content 3: Text Paste -->
+          <div id="import-text" class="import-tab-content">
+            <div class="form-group">
+              <label for="recipe-text">PASTE RECIPE TEXT</label>
+              <textarea id="recipe-text" class="form-control" placeholder="Ingredients:&#10;- Flour&#10;- Milk&#10;&#10;Steps:&#10;1. Mix..."></textarea>
+            </div>
+          </div>
+          
+          <!-- Content 4: DIY Manual -->
+          <div id="import-diy" class="import-tab-content">
+            <div class="form-group">
+              <label for="diy-title">RECIPE TITLE</label>
+              <input type="text" id="diy-title" class="form-control" placeholder="My Gourmet Dish">
+            </div>
+            <div class="form-group">
+              <label for="diy-category">CATEGORY</label>
+              <select id="diy-category" class="form-control">
+                <option value="Quick & Easy">Quick & Easy</option>
+                <option value="Italian">Italian</option>
+                <option value="Mexican">Mexican</option>
+                <option value="Healthy">Healthy</option>
+                <option value="Comfort Food">Comfort Food</option>
+                <option value="Sweet Treats">Sweet Treats</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="diy-ingredients">INGREDIENTS (ONE PER LINE)</label>
+              <textarea id="diy-ingredients" class="form-control" placeholder="1 cup Milk&#10;2 Eggs"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="diy-instructions">STEPS (ONE PER LINE)</label>
+              <textarea id="diy-instructions" class="form-control" placeholder="Mix ingredients&#10;Bake for 20m"></textarea>
+            </div>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button id="cancel-import-btn" class="btn btn-secondary">Cancel</button>
+          <button id="import-btn" class="btn btn-primary">Add the Sauce! 🌶️</button>
+        </div>
+      </dialog>
+
+      <!-- Share Dialog -->
+      <dialog id="share-dialog" closedby="any" aria-labelledby="share-title">
+        <div class="modal-header">
+          <h2 id="share-title">Spill the Beans! 🫘</h2>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
+            Copy the recipe details below to share Jace's delicious formula with your cooking squad!
+          </p>
+          <div class="share-options">
+            <button id="share-markdown-btn" class="share-btn">📋 Copy as Emoji-Markdown</button>
+            <button id="share-text-btn" class="share-btn">📝 Copy as Clean Text</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="close-share-btn" class="btn btn-secondary">Done</button>
+        </div>
+      </dialog>
+
+      <!-- Toast Feedback -->
+      <div id="toast" class="toast">Toast Message</div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="recipes.js"></script>
+  <script src="app.js"></script>
+  
+  <!-- Fallback dialog light dismiss trigger logic (Safari/Firefox) -->
+  <script>
+    document.querySelectorAll('dialog').forEach(dialog => {
+      if (!('closedBy' in HTMLDialogElement.prototype)) {
+        dialog.addEventListener('click', (event) => {
+          if (event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          const isInside = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (isInside) return;
+          dialog.close();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

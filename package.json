@@ -1,0 +1,11 @@
+{
+  "name": "munchlab",
+  "version": "1.0.0",
+  "description": "Jace's Recipe Laboratory Mobile Web App",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server -p 8080 -c-1"
+  },
+  "author": "Antigravity",
+  "license": "ISC"
+}
